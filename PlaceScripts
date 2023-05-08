@@ -1,0 +1,240 @@
+Script 1:
+
+local rs = game:GetService("ReplicatedStorage")
+local plys = game:GetService("Players")
+local loplys = plys.LocalPlayer
+local re1 = rs.PlaceScriptInformant
+local re2 = rs.Placed
+
+local RE = game:GetService("ReplicatedStorage").PlaceEvent
+local units = game:GetService("ReplicatedStorage").Units
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local uis = game:GetService("UserInputService")
+
+local place = false
+local ROT = 0
+local placed = 0
+local mplaced = 5
+local RotV = 5
+local money = script.Parent.Parent.Money
+local price = script.Parent.Price
+local plaCV = true
+
+local button = script.Parent
+local UT = script.Parent:FindFirstChild(script.Parent.Name)
+local SG = script.Parent.Parent
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local mouse = player:GetMouse()
+local correct = false
+local move = false
+local sn = 2
+local destroyed = false
+local pla = false
+local found = false
+local fired = false
+local PlaceNum = 1
+
+script.Parent.MouseButton1Click:Connect(function(click)
+	if money.Value >= price.Value then
+	if script.Parent:FindFirstChild(script.Parent.Name).Value ~= nil then
+	if script.Parent.Placed.Parent == script.Parent then
+		if script.Parent.Placed.Value / game:GetService("ReplicatedStorage"):WaitForChild("PlayerCount").Value < script.Parent.MaxPlaced.Value then
+	if script.Enabled == true then
+		plaCV = true
+		pla = false
+		destroyed = false
+		found = false
+		fired = false
+
+			local tower = units:FindFirstChild(UT.Value):Clone()
+			tower.Parent = game.Workspace.Towers
+			tower.Name = "TowerPlacement"
+
+			SG.Background.Visible = false
+			SG.Unit1.Visible = false
+			SG.Unit2.Visible = false
+			SG.Unit3.Visible = false
+			SG.Unit4.Visible = false
+			SG.Unit5.Visible = false
+
+			local RunSerivce = game:GetService("RunService")
+			mouse.TargetFilter = tower
+
+
+			local function render()
+
+				local x, y, z = mouse.Hit.X, mouse.Hit.Y, mouse.Hit.Z
+
+				if mouse.Target then
+
+				if plaCV == true then
+					
+					if pla == false then
+						tower.Parent = game.Workspace.Towers
+						pla = true
+					end
+					
+					if found == false then
+								local thumRP = tower:WaitForChild("HumanoidRootPart")
+								local RangePart = tower.RangePart
+						thumRP.CFrame = CFrame.new(x, y + 3.2, z)
+								RangePart.CFrame = CFrame.new(x, y, z)
+								RangePart.Orientation = Vector3.new(0, 0, -90)
+								RangePart.Size = Vector3.new(0.04, tower.Range.Value * 2, tower.Range.Value * 2)
+
+								script.Placing.Value = true
+								
+						mouse.Button1Down:Connect(function(press)
+						if	mouse.Target.Name == script.Parent.TowerType.Value then
+										if destroyed == false then
+											script.Placing.Value = false
+									plaCV = false
+									found = true
+
+
+								local plc = true
+
+											local prc = price.Value
+											
+
+								local x2, y2, z2 = tower.HumanoidRootPart.Position.X, tower.HumanoidRootPart.Position.Y, tower.HumanoidRootPart.Position.Z
+									script.Parent.Parent.UnitName.Value = script.Parent.Unit1.Value
+									
+									if fired == false then
+												fired = true
+												script.Parent:WaitForChild("Placed").PlacedValueHandler.PlaceNumber.Value = PlaceNum
+									RE:FireServer(script.Parent.Parent.UnitName.Value, x2, y2, z2, prc, PlaceNum, script.RotationValue.Value)
+												re2:FireServer("Cloned")
+												
+												wait(1)
+								tower:Destroy()
+								destroyed = true
+
+								SG.Background.Visible = true
+								SG.Unit1.Visible = true
+								SG.Unit2.Visible = true
+								SG.Unit3.Visible = true
+								SG.Unit4.Visible = true
+									SG.Unit5.Visible = true
+									local sc2 = script:Clone()
+									sc2.Parent = script.Parent
+									script:Destroy()
+										return
+								end
+							end
+									
+
+						
+							end
+						end)
+						end
+					end
+				end
+							
+							
+							mouse.Button2Down:Connect(function(rightClick)
+								
+								if fired == false then
+									
+									tower:Destroy()
+									destroyed = true
+
+									SG.Background.Visible = true
+									SG.Unit1.Visible = true
+									SG.Unit2.Visible = true
+									SG.Unit3.Visible = true
+									SG.Unit4.Visible = true
+									SG.Unit5.Visible = true
+									local sc2 = script:Clone()
+									sc2.Parent = script.Parent
+									script:Destroy()
+									
+								end
+								
+							end)
+							
+			end
+
+			RunService.RenderStepped:Connect(render)
+
+		end
+		end
+		end
+		end
+		end
+end)	
+
+script2:
+
+local money = script.Parent.Money
+local payre = game:GetService("ReplicatedStorage"):WaitForChild("Pay")
+
+payre.OnClientEvent:Connect(function(price)
+		
+	money.Value = money.Value - price
+		
+end)
+
+script 3:
+
+local rs = game:GetService("ReplicatedStorage")
+local re = rs.Placed
+
+re.OnServerEvent:Connect(function(player, cloned)
+	
+	local plr = player.Name
+	
+	re:FireClient(player, plr)
+	
+end)
+
+script 4:
+
+local PlacementEvent = game:GetService("ReplicatedStorage").PlaceEvent
+local ObjectFolder = game:GetService("ReplicatedStorage").Units
+local re = game:GetService("ReplicatedStorage").Placement
+local payre = game:GetService("ReplicatedStorage").Pay
+local physServ = game:GetService("PhysicsService")
+local placing = "Placing"
+local towers = "towerdefence"
+
+PlacementEvent.OnServerEvent:Connect(function(player, UT, x, y, z, price, PlaceNum, ROT)
+		
+	if player.Name == script.Player.Value then
+	
+	--local debounce = false
+	
+	wait(0.5)
+	local Object = ObjectFolder:FindFirstChild(UT):Clone()
+	--debounce = true
+		Object.HumanoidRootPart.CFrame = CFrame.new(x, y, z)
+		Object.RangePart.CFrame = CFrame.new(Object:WaitForChild("HumanoidRootPart").Position.X, 0.5, Object:WaitForChild("HumanoidRootPart").Position.Z)
+		Object.RangePart.Orientation = Vector3.new(0, -0, -90)
+		Object.RangePart.Transparency = 1
+		local plr = script.Player
+		game:GetService("ReplicatedStorage").TowerPlaced.Value = true
+		Object.TowerOwner.Value = plr.Value
+		Object:WaitForChild("RangePart").Size = Vector3.new(0.04, Object:WaitForChild("Range").Value * 2, Object:WaitForChild("Range").Value * 2)
+
+		--local thumRP = Object:WaitForChild("HumanoidRootPart")
+		--print(ROT)
+		--thumRP.Orientation = Vector3.new(thumRP.Orientation.X, ROT + thumRP.Orientation.Y, thumRP.Orientation.Z)
+	Object.Parent = game.Workspace.Towers.Towers
+		Object:WaitForChild("RangePart").Anchored = true
+		Object.HumanoidRootPart.Anchored = true
+	ObjectFolder:FindFirstChild(UT).Parent = game:GetService("ServerStorage")
+	
+	payre:FireClient(player, price)
+	
+	local remoR = game:GetService("ReplicatedStorage").Placed
+		
+		local PN = PlaceNum
+	remoR:FireClient(player, PN, PlaceNum)
+	game:GetService("ServerStorage"):FindFirstChild(UT).Parent = game:GetService("ReplicatedStorage").Units
+		
+	end
+end)
