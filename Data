@@ -1,0 +1,55 @@
+local Players = game:GetService("Players")
+
+local Template = require(script.Parent.Template)
+local ProfileService = require(script.Parent.ProfileService)
+local Manager = require(script.Parent.Manager)
+
+local ProfileStore = ProfileService.GetProfileStore("Game1", Template)
+
+local function GiveLeaderstats(player: Player)
+	
+	Manager.AdjustPets(player)
+	
+	wait(0.5)
+	
+	Manager.AdjustAbilities(player)
+	
+end
+
+local function SendCurrentData(player, profile)
+	
+end
+
+local function PlayerAdded(player: Player)
+	local profile = ProfileStore:LoadProfileAsync("Player_"..player.UserId)
+	if profile == nil then
+		player:Kick("Data issue, try again shortly. If issue persists, contact us!")
+		return
+	end
+	
+	profile:AddUserId(player.UserId)
+	profile:Reconcile()
+	profile:ListenToRelease(function()
+		Manager.Profiles[player] = nil
+		player:Kick("Data issue, try again shortly. If issue persists, contact us!")
+	end)
+	
+	if player:IsDescendantOf(Players) == true then
+		Manager.Profiles[player] = profile
+		GiveLeaderstats(player)
+	else
+		profile:Release()
+	end
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+	task.spawn(PlayerAdded, player)
+end
+
+Players.PlayerAdded:Connect(PlayerAdded)
+
+Players.PlayerRemoving:Connect(function(player: Player)
+	local profile = Manager.Profiles[player]
+	if not profile then return end
+	profile:Release()
+end)
