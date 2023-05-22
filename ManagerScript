@@ -1,0 +1,85 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local ref = ReplicatedStorage.RemoteEvents
+
+local module = {}
+
+module.Profiles = {}
+
+function module.AdjustCash(player: Player, amount: number)
+	local profile = module.Profiles[player]
+	if not profile then return end
+
+	profile.Data.Cash += amount
+	player.leaderstats.Cash.Value = profile.Data.Cash
+end
+
+function module.AdjustGems(player: Player, amount: number)
+	local profile = module.Profiles[player]
+	if not profile then return end
+
+	profile.Data.Gems += amount
+end
+
+function module.AdjustPets(player: Player)
+	
+	local profile = module.Profiles[player]
+	if not profile then return end
+	
+	ref.DataSaveEvent:FireClient(player, profile.Data.Pets, "Pets")
+	
+end
+
+function module.AdjustAbilities(player: Player)
+
+	local profile = module.Profiles[player]
+	if not profile then return end
+
+	ref.DataSaveEvent:FireClient(player, profile.Data.Abilities, "Abilities")
+
+end
+
+function module.SavePetInfo(player: Player, data)
+	
+	print(1, data)
+	
+	local profile = module.Profiles[player]
+		
+	if not profile then return end
+	
+	print(2, profile.Data.Pets)
+	
+	profile.Data.Pets = data
+	
+	print(data)
+	
+end
+
+function module.SaveAbilityInfo(player: Player, data)
+
+	local profile = module.Profiles[player]
+	if not profile then return end
+
+	profile.Data.Abilities = data
+
+end
+
+function module.SavePowerCrystals(player: Player, data)
+
+	local profile = module.Profiles[player]
+	if not profile then return end
+
+	profile.Data.PowerCrystals = data
+
+end
+
+function module.SavePower(player: Player, data)
+
+	local profile = module.Profiles[player]
+	if not profile then return end
+
+	profile.Data.Power = data
+
+end
+
+return module
