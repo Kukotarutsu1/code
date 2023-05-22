@@ -1,0 +1,8 @@
+local module = {
+	Power = 0,
+	PowerCrystals = 0,
+	Pets = {},
+	Abilities = {},
+}
+
+return module
