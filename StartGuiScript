@@ -1,0 +1,168 @@
+local gui = script.Parent
+local ib = script.Parent.InventoryButton
+local catframe = script.Parent.InventoryCatagoryFrame
+local petsframe = catframe.PetsFrame
+local pb = petsframe.PetsButton
+local abiframe = catframe.AbilitiesFrame
+local skillframe = catframe.SkillTreeFrame
+local petinvframe = script.Parent.PetsInventoryFrame
+local ab = abiframe.AbilitiesButton
+local abilityinvframe = script.Parent.AbilitiesInventoryFrame
+local ctl = script.Parent.CatagoryTextLabel
+
+local invOpen = false
+
+local magicfold = game.ReplicatedStorage.Magic
+local fbireb = magicfold["Fire ball"]
+
+local pets = {}
+local abilities = {}
+
+local pets2 = {	}
+local abilities2 = {}
+
+local ref = game.ReplicatedStorage.RemoteEvents
+
+local ManagerModule = require(game.ReplicatedStorage.ProfileModules.Manager)
+
+local pplr = game.Players.LocalPlayer.Name
+
+ib.MouseButton1Click:Connect(function(click)
+	
+	if invOpen == false then
+				
+		catframe.Visible = true
+		
+		invOpen = true
+				
+	elseif invOpen == true then
+				
+		catframe.Visible = false
+		
+		invOpen = false
+		
+		petinvframe.Visible = false
+		
+		abilityinvframe.Visible = false
+		
+		ctl.Visible = false
+		
+	end
+	
+end)
+
+pb.MouseButton1Click:Connect(function(openpets)
+	
+	petinvframe.Visible = true
+	
+	catframe.Visible = false
+	
+	ctl.Visible = true
+	
+	ctl.Text = "Pets:"
+		
+end)
+
+ab.MouseButton1Click:Connect(function(openabilities)
+	
+	catframe.Visible = false
+	
+	abilityinvframe.Visible = true
+	
+	ctl.Visible = true
+
+	ctl.Text = "Abilities:"
+	
+end)
+
+local function updinv()
+	
+	for i,v in ipairs(pets2) do
+		
+		table.insert(pets, i)
+		table.remove(pets2, i)
+
+		local fr = Instance.new("TextButton")  
+		
+		fr.Name = v
+		fr.Parent = petinvframe
+		fr.Text = v
+		fr.TextScaled = true
+		fr.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		fr.Transparency = 0
+		fr.ZIndex = 8
+		
+	end
+
+	for i,v in ipairs(abilities2) do
+		
+		table.insert(abilities, i)
+		table.remove(abilities2, i)
+
+		local fr = Instance.new("TextButton")
+		fr.Name = v
+		fr.Parent = abilityinvframe
+		fr.Text = v
+		fr.TextScaled = true
+		fr.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		fr.Transparency = 0
+		fr.ZIndex = 8
+		
+	end
+	
+	ManagerModule.SavePetInfo(pplr ,pets)
+		
+	wait(0.250)
+	
+	ManagerModule.SaveAbilityInfo(pplr, abilities)
+	
+end
+
+script.Parent.TextButton.MouseButton1Click:Connect(function(test)
+	
+	local cr = 0
+	
+	cr = cr + 1
+
+	table.insert(pets2, cr)
+	
+	updinv()
+	
+	
+end)
+
+updinv()
+
+ref.FirstJoinEvent.OnClientEvent:Connect(function(firstjoin)
+	
+	table.insert(abilities2, "Fire Ball")
+
+	updinv()
+
+end)
+
+ref.DataSaveEvent.OnClientEvent:Connect(function(data, ty)
+	
+	if ty == "Pets" then
+				
+		for i,v in ipairs(data) do
+			
+			table.insert(pets2, v)
+			updinv()
+			wait(0.125)
+			
+		end
+		
+	elseif ty == "Abilities" then
+		
+		for i,v in ipairs(data) do
+
+			table.insert(abilities2, v)
+			updinv()
+			wait(0.125)
+
+		end
+	
+	end
+	
+end)
